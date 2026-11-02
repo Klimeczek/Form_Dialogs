@@ -3,11 +3,15 @@ package com.example.from_dialogs;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private MaterialSwitch swNewsletter;
     private CheckBox cbTerms;
 
+    private Spinner spCourse;
     private String birthDate = "";
 
     @Override
@@ -45,6 +50,20 @@ public class MainActivity extends AppCompatActivity {
         tvSummary = findViewById(R.id.tvSummary);
         swNewsletter = findViewById(R.id.swNewsletter);
         cbTerms = findViewById(R.id.cbTerms);
+        spCourse = findViewById(R.id.spCourse);
+
+        setUpCourseSpinner();
+
+        spCourse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    tvSummary.setText("");
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
 
         cbTerms.setOnCheckedChangeListener((buttonView, isChecked) -> btnSubmit.setEnabled(isChecked));
         tvLevelValue.setText(String.valueOf(sbLevel.getProgress()));
@@ -66,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
             tvSummary.setText(buildSummary());
         });
 
+    }
+
+    private void setUpCourseSpinner() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this, R.array.courses, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCourse.setAdapter(adapter);
     }
 
     private void showDatePicker() {
@@ -92,14 +118,14 @@ public class MainActivity extends AppCompatActivity {
                 ? getString(R.string.yes_short)
                 : getString(R.string.no_short);
 
-//        return getString(R.string.summary_format,
-//                etName.getText().toString().trim(),
-//                etEmail.getText().toString().trim(),
-//                birthDate,
-//                spCourse.getSelectedItem().toString(),
-//                mode,
-//                sbLevel.getProgress(),
-//                newsletter);
+        return getString(R.string.summary_format,
+                etName.getText().toString().trim(),
+                etEmail.getText().toString().trim(),
+                birthDate,
+                spCourse.getSelectedItem().toString(),
+                mode,
+                sbLevel.getProgress(),
+                newsletter);
     }
 
 }
